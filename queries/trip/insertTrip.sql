@@ -1,0 +1,1 @@
+INSERT INTO trip(code, about, name) VALUES ($1, $2, $3);
