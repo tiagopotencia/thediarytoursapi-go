@@ -8,5 +8,6 @@ func SetRoutes(r *gin.Engine){
 	v1 := r.Group("v1")
 
 	SetTripRoutes(v1)
+	SetSuggestionRoutes(v1)
 
 }
