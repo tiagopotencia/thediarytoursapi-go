@@ -2,12 +2,13 @@ package business
 
 import (
 	"git.heroku.com/thediarytoursapi-go/connection"
-	"git.heroku.com/thediarytoursapi-go/bindata"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"errors"
-	"strconv"
 	"git.heroku.com/thediarytoursapi-go/apireturns"
+	"log"
+	"gopkg.in/doug-martin/goqu.v3"
+	_ "gopkg.in/doug-martin/goqu.v3/adapters/postgres"
 )
 
 type Trip struct {
@@ -23,9 +24,14 @@ var jr apireturns.JSONResult
 
 //GetAllTrips get all Trips from db
 func GetAllTrips(c *gin.Context)  {
-	db := connection.GetConnection()
-	defer db.Close()
-	query, err := bindata.Asset("queries\\trip\\getAllTrips.sql")
+	conn := connection.GetConnection()
+	defer conn.Close()
+
+	db := goqu.New("postgres", conn.DB)
+
+	//query, err := bindata.Asset("queries\\trip\\getAllTrips.sql")
+
+	query, _, err := db.From("trip").ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
@@ -34,16 +40,21 @@ func GetAllTrips(c *gin.Context)  {
 
 	var trips []Trip
 
-	db.Select(&trips, string(query))
+	log.Print(query)
+
+	conn.Select(&trips, string(query))
 
 	c.JSON(http.StatusOK, trips)
 }
 
 //GetTrip get a Trip from db based on ID
 func GetTrip(c *gin.Context)  {
-	db := connection.GetConnection()
-	defer db.Close()
-	query, err := bindata.Asset("queries\\trip\\getTrip.sql")
+	conn := connection.GetConnection()
+	defer conn.Close()
+
+	db := goqu.New("postgres", conn.DB)
+
+	query, _, err := db.From("trip").Where(goqu.Ex{"id":c.Param("id")}).ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
@@ -52,73 +63,44 @@ func GetTrip(c *gin.Context)  {
 
 	var trip Trip
 
-	ID, err := strconv.ParseInt(c.Param("id"), 10, 64)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	db.Get(&trip, string(query), ID)
+	conn.Get(&trip, string(query))
 
 	c.JSON(http.StatusOK, trip)
 }
 
 //PostTrip insert a new Trip
 func PostTrip(c *gin.Context)  {
-	db := connection.GetConnection()
-	defer db.Close()
-	query, err := bindata.Asset("queries\\trip\\insertTrip.sql")
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
-		return
-	}
+	conn := connection.GetConnection()
+	defer conn.Close()
+	//query, err := bindata.Asset("queries\\trip\\insertTrip.sql")
+	//INSERT INTO trip(code, about, name) VALUES ($1, $2, $3);
+
+	db := goqu.New("postgres", conn.DB)
 
 	var trip Trip
 
-	err = c.Bind(&trip)
+	err := c.Bind(&trip)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	tx, err := db.Begin()
+	query := db.From("trip").Insert(goqu.Record{"code": trip.Code, "about":trip.About, "name":trip.Name})
 
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
-		return
-	}
+	result, err := query.Exec()
 
-	tripStmt, err := tx.Prepare(string(query))
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	result, err := tripStmt.Exec(trip.Code, trip.About, trip.Name)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
-		return
+	if err != nil{
+		log.Print(err.Error())
 	}
 
 	rows, err := result.RowsAffected()
 
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		tx.Rollback()
-
-	}
-
 	if rows > 0{
 		jr.Code = http.StatusOK
 		jr.Message = "Trip created successfully"
-		tx.Commit()
 	} else {
 		jr.Code = http.StatusInternalServerError
 		jr.Message = "Some error ocourred during insert on db"
-		tx.Rollback()
 	}
 
 	c.JSON(jr.Code, jr)
