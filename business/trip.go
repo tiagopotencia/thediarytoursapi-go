@@ -12,18 +12,16 @@ import (
 )
 
 type Trip struct {
-
-ID int64 `db:"id" json:"id"`
-Code string `db:"code" json:"code"`
-About string `db:"about" json:"about"`
-Name string `db:"name" json:"name"`
-
+	ID    int64 `db:"id" json:"id"`
+	Code  string `db:"code" json:"code"`
+	About string `db:"about" json:"about"`
+	Name  string `db:"name" json:"name"`
 }
 
 var jr apireturns.JSONResult
 
 //GetAllTrips get all Trips from db
-func GetAllTrips(c *gin.Context)  {
+func GetAllTrips(c *gin.Context) {
 	conn := connection.GetConnection()
 	defer conn.Close()
 
@@ -48,7 +46,7 @@ func GetAllTrips(c *gin.Context)  {
 }
 
 //GetTrip get a Trip from db based on ID
-func GetTrip(c *gin.Context)  {
+func GetTrip(c *gin.Context) {
 	conn := connection.GetConnection()
 	defer conn.Close()
 
@@ -69,7 +67,7 @@ func GetTrip(c *gin.Context)  {
 }
 
 //PostTrip insert a new Trip
-func PostTrip(c *gin.Context)  {
+func PostTrip(c *gin.Context) {
 	conn := connection.GetConnection()
 	defer conn.Close()
 	//query, err := bindata.Asset("queries\\trip\\insertTrip.sql")
@@ -89,13 +87,13 @@ func PostTrip(c *gin.Context)  {
 
 	result, err := query.Exec()
 
-	if err != nil{
+	if err != nil {
 		log.Print(err.Error())
 	}
 
 	rows, err := result.RowsAffected()
 
-	if rows > 0{
+	if rows > 0 {
 		jr.Code = http.StatusOK
 		jr.Message = "Trip created successfully"
 	} else {
@@ -105,10 +103,9 @@ func PostTrip(c *gin.Context)  {
 
 	c.JSON(jr.Code, jr)
 
-
 }
 
-func PutTrip(c *gin.Context)  {
+func PutTrip(c *gin.Context) {
 	conn := connection.GetConnection()
 	defer conn.Close()
 	//query, err := bindata.Asset("queries\\trip\\insertTrip.sql")
@@ -129,13 +126,13 @@ func PutTrip(c *gin.Context)  {
 
 	result, err := exec.Exec()
 
-	if err != nil{
+	if err != nil {
 		log.Print(err.Error())
 	}
 
 	rows, err := result.RowsAffected()
 
-	if rows > 0{
+	if rows > 0 {
 		jr.Code = http.StatusOK
 		jr.Message = "Trip edited successfully"
 	} else {
@@ -145,10 +142,9 @@ func PutTrip(c *gin.Context)  {
 
 	c.JSON(jr.Code, jr)
 
-
 }
 
-func DeleteTrip(c *gin.Context)  {
+func DeleteTrip(c *gin.Context) {
 	conn := connection.GetConnection()
 	defer conn.Close()
 	//query, err := bindata.Asset("queries\\trip\\insertTrip.sql")
@@ -169,13 +165,13 @@ func DeleteTrip(c *gin.Context)  {
 
 	result, err := exec.Exec()
 
-	if err != nil{
+	if err != nil {
 		log.Print(err.Error())
 	}
 
 	rows, err := result.RowsAffected()
 
-	if rows > 0{
+	if rows > 0 {
 		jr.Code = http.StatusOK
 		jr.Message = "Trip deleted successfully"
 	} else {
@@ -184,6 +180,5 @@ func DeleteTrip(c *gin.Context)  {
 	}
 
 	c.JSON(jr.Code, jr)
-
 
 }

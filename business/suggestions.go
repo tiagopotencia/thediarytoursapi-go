@@ -12,15 +12,15 @@ import (
 
 //TODO: Renomear nome das coluas do banco
 type Suggestions struct {
-	ID int64 `db:"id"`
-	Type string `db:"type"`
-	Name string `db:"name"`
+	ID          int64 `db:"id"`
+	Type        string `db:"type"`
+	Name        string `db:"name"`
 	Description string `db:"description"`
-	IdTrip int64 `db:"id_trip"`
+	IdTrip      int64 `db:"id_trip"`
 }
 
 //GetAllSuggestions get all Suggestions from db
-func GetAllSuggestions(c *gin.Context)  {
+func GetAllSuggestions(c *gin.Context) {
 	conn := connection.GetConnection()
 	defer conn.Close()
 
@@ -43,7 +43,7 @@ func GetAllSuggestions(c *gin.Context)  {
 }
 
 //GetSuggestion get a Suggestion from db based on ID
-func GetSuggestion(c *gin.Context)  {
+func GetSuggestion(c *gin.Context) {
 	conn := connection.GetConnection()
 	defer conn.Close()
 
@@ -64,7 +64,7 @@ func GetSuggestion(c *gin.Context)  {
 }
 
 //PostSuggestion insert a new Suggestion
-func PostSuggestion(c *gin.Context)  {
+func PostSuggestion(c *gin.Context) {
 	conn := connection.GetConnection()
 	defer conn.Close()
 	//query, err := bindata.Asset("queries\\suggestion\\insertSuggestion.sql")
@@ -84,13 +84,13 @@ func PostSuggestion(c *gin.Context)  {
 
 	result, err := query.Exec()
 
-	if err != nil{
+	if err != nil {
 		log.Print(err.Error())
 	}
 
 	rows, err := result.RowsAffected()
 
-	if rows > 0{
+	if rows > 0 {
 		jr.Code = http.StatusOK
 		jr.Message = "Suggestion created successfully"
 	} else {
@@ -100,10 +100,9 @@ func PostSuggestion(c *gin.Context)  {
 
 	c.JSON(jr.Code, jr)
 
-
 }
 
-func PutSuggestion(c *gin.Context)  {
+func PutSuggestion(c *gin.Context) {
 	conn := connection.GetConnection()
 	defer conn.Close()
 	//query, err := bindata.Asset("queries\\suggestion\\insertSuggestion.sql")
@@ -124,13 +123,13 @@ func PutSuggestion(c *gin.Context)  {
 
 	result, err := exec.Exec()
 
-	if err != nil{
+	if err != nil {
 		log.Print(err.Error())
 	}
 
 	rows, err := result.RowsAffected()
 
-	if rows > 0{
+	if rows > 0 {
 		jr.Code = http.StatusOK
 		jr.Message = "Suggestion edited successfully"
 	} else {
@@ -140,10 +139,9 @@ func PutSuggestion(c *gin.Context)  {
 
 	c.JSON(jr.Code, jr)
 
-
 }
 
-func DeleteSuggestion(c *gin.Context)  {
+func DeleteSuggestion(c *gin.Context) {
 	conn := connection.GetConnection()
 	defer conn.Close()
 	//query, err := bindata.Asset("queries\\suggestion\\insertSuggestion.sql")
@@ -164,13 +162,13 @@ func DeleteSuggestion(c *gin.Context)  {
 
 	result, err := exec.Exec()
 
-	if err != nil{
+	if err != nil {
 		log.Print(err.Error())
 	}
 
 	rows, err := result.RowsAffected()
 
-	if rows > 0{
+	if rows > 0 {
 		jr.Code = http.StatusOK
 		jr.Message = "Suggestion deleted successfully"
 	} else {
@@ -179,6 +177,5 @@ func DeleteSuggestion(c *gin.Context)  {
 	}
 
 	c.JSON(jr.Code, jr)
-
 
 }

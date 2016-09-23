@@ -5,7 +5,7 @@ import (
 	"git.heroku.com/thediarytoursapi-go/business"
 )
 
-func SetSuggestionRoutes(r *gin.RouterGroup)  {
+func SetSuggestionRoutes(r *gin.RouterGroup) {
 
 	resource := r.Group("suggestions")
 

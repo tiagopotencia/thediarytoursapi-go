@@ -1,6 +1,6 @@
 package apireturns
 
 type JSONResult struct {
-	Code int
+	Code    int
 	Message string
 }

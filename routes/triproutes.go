@@ -5,7 +5,7 @@ import (
 	"git.heroku.com/thediarytoursapi-go/business"
 )
 
-func SetTripRoutes(r *gin.RouterGroup)  {
+func SetTripRoutes(r *gin.RouterGroup) {
 
 	resource := r.Group("trips")
 
