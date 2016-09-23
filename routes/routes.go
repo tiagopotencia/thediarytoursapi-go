@@ -13,4 +13,6 @@ func SetRoutes(r *gin.Engine) {
 	SetUserRoutes(v1)
 	SetTripUserRoutes(v1)
 	SetTripUtilNumberRoutes(v1)
+	SetItineraryRoutes(v1)
+
 }
