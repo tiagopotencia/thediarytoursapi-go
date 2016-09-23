@@ -11,4 +11,5 @@ func SetRoutes(r *gin.Engine) {
 	SetSuggestionRoutes(v1)
 	SetPhoneInBrazilRoutes(v1)
 	SetUserRoutes(v1)
+	SetTripUserRoutes(v1)
 }
