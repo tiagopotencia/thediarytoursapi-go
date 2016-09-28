@@ -1,0 +1,13 @@
+{
+  "name": "thediarytourapi",
+  "description": "The Diary Tours API",
+  "keywords": [
+    "thediarytours",
+    "go",
+    "tplabs"
+  ],
+  "image": "heroku/go:1.7",
+  "mount_dir": "src/git.heroku.com/thediarytoursapi-go",
+  "website": "https://stormy-tundra-43639.herokuapp.com",
+  "repository": "https://git.heroku.com/stormy-tundra-43639"
+}
