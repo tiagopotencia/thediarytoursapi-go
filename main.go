@@ -31,6 +31,9 @@ func main() {
 		ValidateHeaders: false,
 	}))
 
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl.html", nil)
+	})
 	routes.SetRoutes(r)
 
 	r.Run(":" + port)
