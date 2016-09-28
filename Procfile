@@ -1,1 +1,1 @@
-web:thediarytoursapi-go
+web: thediarytoursapi-go
