@@ -11,12 +11,13 @@ import (
 )
 
 
-//TODO: Renomear nome das coluas do banco
+//TODO: Renomear nome das colunas do banco
 type Itinerary struct {
 	ID          int64 `db:"id"`
 	Title       string `db:"title"`
 	Description string `db:"description"`
-	IDTrip      int64 `db:"id_trip"`
+	IdTrip      int64 `db:"id_trip"`
+	Image      string `db:"image"`
 }
 
 //GetAllItinerarys get all Itinerarys from db
@@ -26,7 +27,7 @@ func GetAllItinerarys(c *gin.Context) {
 
 	db := goqu.New("postgres", conn.DB)
 
-	//query, err := bindata.Asset("queries\\itinerary\\getAllItinerarys.sql")
+	//query, err := bindata.Asset("queries\\message\\getAllMessages.sql")
 
 	query, _, err := db.From("itinerary").ToSql()
 
@@ -35,13 +36,13 @@ func GetAllItinerarys(c *gin.Context) {
 		return
 	}
 
-	var itinerarys []Itinerary
+	var itineraries []Itinerary
 
 	log.Print(query)
 
-	conn.Select(&itinerarys, string(query))
+	conn.Select(&itineraries, string(query))
 
-	c.JSON(http.StatusOK, itinerarys)
+	c.JSON(http.StatusOK, itineraries)
 }
 
 //GetItinerary get a Itinerary from db based on ID
@@ -82,7 +83,7 @@ func PostItinerary(c *gin.Context) {
 		return
 	}
 
-	query := db.From("itinerary").Insert(goqu.Record{"title": itinerary.Title, "description":itinerary.Description, "id_trip":itinerary.IDTrip})
+	query := db.From("itinerary").Insert(goqu.Record{"title": itinerary.Title, "description":itinerary.Description, "id_trip":itinerary.IdTrip, "image":itinerary.Image})
 
 	result, err := query.Exec()
 
@@ -121,7 +122,7 @@ func PutItinerary(c *gin.Context) {
 	}
 
 	query := db.From("itinerary").Where(goqu.Ex{"id":c.Param("id")})
-	exec := query.Update(goqu.Record{"title": itinerary.Title, "description":itinerary.Description, "id_trip":itinerary.IDTrip})
+	exec := query.Update(goqu.Record{"title": itinerary.Title, "description":itinerary.Description, "id_trip":itinerary.IdTrip})
 
 	result, err := exec.Exec()
 

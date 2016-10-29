@@ -6,14 +6,14 @@ import (
 	"github.com/itsjamie/gin-cors"
 	"time"
 	"os"
-	"log"
 )
 
 func main() {
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		log.Fatal("$PORT must be set")
+		port = "8080"
+		//log.Fatal("$PORT must be set")
 	}
 
 	r := gin.New()
