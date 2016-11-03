@@ -21,6 +21,10 @@ type Itinerary struct {
 	Dia      string `db:"dia"`
 }
 
+type Resp struct {
+	Content []Itinerary
+}
+
 //GetAllItinerarys get all Itinerarys from db
 func GetAllItinerarys(c *gin.Context) {
 	conn := connection.GetConnection()
@@ -43,7 +47,10 @@ func GetAllItinerarys(c *gin.Context) {
 
 	conn.Select(&itineraries, string(query))
 
-	c.JSON(http.StatusOK, itineraries)
+	resp := Resp{}
+	resp.Content = itineraries
+
+	c.JSON(http.StatusOK, resp)
 }
 
 //GetItinerary get a Itinerary from db based on ID
