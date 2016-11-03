@@ -15,5 +15,6 @@ func SetRoutes(r *gin.Engine) {
 	SetTripUtilNumberRoutes(v1)
 	SetItineraryRoutes(v1)
 	SetMessageRoutes(v1)
+	SetHotelRoutes(v1)
 
 }
