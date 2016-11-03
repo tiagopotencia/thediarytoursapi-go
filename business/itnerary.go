@@ -18,6 +18,7 @@ type Itinerary struct {
 	Description string `db:"description"`
 	IdTrip      int64 `db:"id_trip"`
 	Image      string `db:"image"`
+	Dia      string `db:"dia"`
 }
 
 //GetAllItinerarys get all Itinerarys from db
@@ -83,7 +84,7 @@ func PostItinerary(c *gin.Context) {
 		return
 	}
 
-	query := db.From("itinerary").Insert(goqu.Record{"title": itinerary.Title, "description":itinerary.Description, "id_trip":itinerary.IdTrip, "image":itinerary.Image})
+	query := db.From("itinerary").Insert(goqu.Record{"title": itinerary.Title, "description":itinerary.Description, "id_trip":itinerary.IdTrip, "image":itinerary.Image, "dia":itinerary.Dia})
 
 	result, err := query.Exec()
 
