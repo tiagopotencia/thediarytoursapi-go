@@ -17,7 +17,7 @@ type Itinerary struct {
 	Title       string `db:"title"`
 	Description string `db:"description"`
 	IdTrip      int64 `db:"id_trip"`
-	Image      string `db:"image"`
+	Image      *string `db:"image"`
 	Dia      string `db:"dia"`
 	Order      *int64 `db:"order"`
 }
