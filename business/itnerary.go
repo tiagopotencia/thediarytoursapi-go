@@ -19,6 +19,7 @@ type Itinerary struct {
 	IdTrip      int64 `db:"id_trip"`
 	Image      string `db:"image"`
 	Dia      string `db:"dia"`
+	Order      *int64 `db:"order"`
 }
 
 type Resp struct {
@@ -34,7 +35,7 @@ func GetAllItinerarys(c *gin.Context) {
 
 	//query, err := bindata.Asset("queries\\message\\getAllMessages.sql")
 
-	query, _, err := db.From("itinerary").ToSql()
+	query, _, err := db.From("itinerary").Order(goqu.I("order").Asc()).ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
