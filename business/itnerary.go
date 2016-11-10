@@ -8,6 +8,7 @@ import (
 	"log"
 	"gopkg.in/doug-martin/goqu.v3"
 	_ "gopkg.in/doug-martin/goqu.v3/adapters/postgres"
+	"regexp"
 )
 
 
@@ -16,10 +17,11 @@ type Itinerary struct {
 	ID          int64 `db:"id"`
 	Title       string `db:"title"`
 	Description string `db:"description"`
-	IdTrip      int64 `db:"id_trip"`
+	IdTrip      *int64 `db:"id_trip"`
 	Image      *string `db:"image"`
 	Dia      string `db:"dia"`
 	Order      *int64 `db:"order"`
+	Weekday      *string `db:"weekday"`
 }
 
 type Resp struct {
@@ -74,6 +76,35 @@ func GetItinerary(c *gin.Context) {
 
 	c.JSON(http.StatusOK, itinerary)
 }
+
+func GetItineraryByDay(c *gin.Context) {
+	conn := connection.GetConnection()
+	defer conn.Close()
+
+	db := goqu.New("postgres", conn.DB)
+
+	//query, err := bindata.Asset("queries\\message\\getAllMessages.sql")
+
+	query, _, err := db.From("itinerary").Where(goqu.Ex{"weekday":  goqu.Op{"like": regexp.MustCompile("^("+c.Param("dia")+")")}}).Order(goqu.I("order").Asc()).ToSql()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
+		return
+	}
+
+	var itineraries []Itinerary
+
+	log.Print(query)
+
+	conn.Select(&itineraries, string(query))
+
+	resp := Resp{}
+	resp.Content = itineraries
+
+	c.JSON(http.StatusOK, resp)
+}
+
+
 
 //PostItinerary insert a new Itinerary
 func PostItinerary(c *gin.Context) {
