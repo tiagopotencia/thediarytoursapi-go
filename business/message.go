@@ -1,25 +1,25 @@
 package business
 
 import (
-	"git.heroku.com/thediarytoursapi-go/connection"
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"errors"
 	"log"
+	"mol/connection"
+	"net/http"
+	"time"
+
+	"github.com/gin-gonic/gin"
 	"gopkg.in/doug-martin/goqu.v3"
 	_ "gopkg.in/doug-martin/goqu.v3/adapters/postgres"
-	"time"
 )
-
 
 //TODO: Renomear nome das coluas do banco
 type Message struct {
-	IsRead     bool   `db:"is_read"`
-	ID         int64  `db:"id"`
-	Message    string `db:"message"`
+	IsRead     bool       `db:"is_read"`
+	ID         int64      `db:"id"`
+	Message    string     `db:"message"`
 	SentDate   *time.Time `db:"sent_date"`
-	IdUserFrom int64 `db:"id_user_from"`
-	IdUserTo   int64 `db:"id_user_to"`
+	IdUserFrom int64      `db:"id_user_from"`
+	IdUserTo   int64      `db:"id_user_to"`
 }
 
 func GetAllMessages(c *gin.Context) {
@@ -53,7 +53,7 @@ func GetMessage(c *gin.Context) {
 
 	db := goqu.New("postgres", conn.DB)
 
-	query, _, err := db.From("message").Where(goqu.Ex{"id":c.Param("id")}).ToSql()
+	query, _, err := db.From("message").Where(goqu.Ex{"id": c.Param("id")}).ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
@@ -84,7 +84,7 @@ func PostMessage(c *gin.Context) {
 		return
 	}
 
-	query := db.From("message").Insert(goqu.Record{"is_read": message.IsRead, "message":message.Message, "sent_date":message.SentDate, "id_user_from":message.IdUserFrom, "id_user_to":message.IdUserTo})
+	query := db.From("message").Insert(goqu.Record{"is_read": message.IsRead, "message": message.Message, "sent_date": message.SentDate, "id_user_from": message.IdUserFrom, "id_user_to": message.IdUserTo})
 
 	result, err := query.Exec()
 
@@ -122,8 +122,8 @@ func PutMessage(c *gin.Context) {
 		return
 	}
 
-	query := db.From("message").Where(goqu.Ex{"id":c.Param("id")})
-	exec := query.Update(goqu.Record{"is_read": message.IsRead, "message":message.Message, "sent_date":message.SentDate, "id_user_from":message.IdUserFrom, "id_user_to":message.IdUserTo})
+	query := db.From("message").Where(goqu.Ex{"id": c.Param("id")})
+	exec := query.Update(goqu.Record{"is_read": message.IsRead, "message": message.Message, "sent_date": message.SentDate, "id_user_from": message.IdUserFrom, "id_user_to": message.IdUserTo})
 
 	result, err := exec.Exec()
 
@@ -161,7 +161,7 @@ func DeleteMessage(c *gin.Context) {
 		return
 	}
 
-	query := db.From("message").Where(goqu.Ex{"id":c.Param("id")})
+	query := db.From("message").Where(goqu.Ex{"id": c.Param("id")})
 	exec := query.Delete()
 
 	result, err := exec.Exec()

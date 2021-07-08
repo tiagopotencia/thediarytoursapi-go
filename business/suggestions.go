@@ -1,22 +1,23 @@
 package business
 
 import (
-	"github.com/gin-gonic/gin"
 	"errors"
 	"log"
-	"git.heroku.com/thediarytoursapi-go/connection"
+	"mol/connection"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"gopkg.in/doug-martin/goqu.v3"
 	_ "gopkg.in/doug-martin/goqu.v3/adapters/postgres"
-	"net/http"
 )
 
 //TODO: Renomear nome das coluas do banco
 type Suggestions struct {
-	ID          int64 `db:"id"`
+	ID          int64  `db:"id"`
 	Type        string `db:"type"`
 	Name        string `db:"name"`
 	Description string `db:"description"`
-	IdTrip      int64 `db:"id_trip"`
+	IdTrip      int64  `db:"id_trip"`
 }
 
 //GetAllSuggestions get all Suggestions from db
@@ -49,7 +50,7 @@ func GetSuggestion(c *gin.Context) {
 
 	db := goqu.New("postgres", conn.DB)
 
-	query, _, err := db.From("suggestions").Where(goqu.Ex{"id":c.Param("id")}).ToSql()
+	query, _, err := db.From("suggestions").Where(goqu.Ex{"id": c.Param("id")}).ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
@@ -80,7 +81,7 @@ func PostSuggestion(c *gin.Context) {
 		return
 	}
 
-	query := db.From("suggestions").Insert(goqu.Record{"type": suggestion.Type, "name":suggestion.Name, "description":suggestion.Description, "id_trip":suggestion.IdTrip})
+	query := db.From("suggestions").Insert(goqu.Record{"type": suggestion.Type, "name": suggestion.Name, "description": suggestion.Description, "id_trip": suggestion.IdTrip})
 
 	result, err := query.Exec()
 
@@ -118,8 +119,8 @@ func PutSuggestion(c *gin.Context) {
 		return
 	}
 
-	query := db.From("suggestions").Where(goqu.Ex{"id":c.Param("id")})
-	exec := query.Update(goqu.Record{"type": suggestion.Type, "name":suggestion.Name, "description":suggestion.Description, "id_trip":suggestion.IdTrip})
+	query := db.From("suggestions").Where(goqu.Ex{"id": c.Param("id")})
+	exec := query.Update(goqu.Record{"type": suggestion.Type, "name": suggestion.Name, "description": suggestion.Description, "id_trip": suggestion.IdTrip})
 
 	result, err := exec.Exec()
 
@@ -157,7 +158,7 @@ func DeleteSuggestion(c *gin.Context) {
 		return
 	}
 
-	query := db.From("suggestions").Where(goqu.Ex{"id":c.Param("id")})
+	query := db.From("suggestions").Where(goqu.Ex{"id": c.Param("id")})
 	exec := query.Delete()
 
 	result, err := exec.Exec()

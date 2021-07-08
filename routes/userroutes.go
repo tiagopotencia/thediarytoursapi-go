@@ -1,8 +1,9 @@
 package routes
 
 import (
+	"mol/business"
+
 	"github.com/gin-gonic/gin"
-	"git.heroku.com/thediarytoursapi-go/business"
 )
 
 func SetUserRoutes(r *gin.RouterGroup) {

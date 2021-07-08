@@ -1,27 +1,27 @@
 package business
 
 import (
-	"git.heroku.com/thediarytoursapi-go/connection"
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"errors"
+	"fmt"
 	"log"
+	"mol/connection"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"gopkg.in/doug-martin/goqu.v3"
 	_ "gopkg.in/doug-martin/goqu.v3/adapters/postgres"
-	"fmt"
 )
-
 
 //TODO: Renomear nome das colunas do banco
 type Hotel struct {
-	ID int `db:"id" json:"id"`
-	Image string `db:"image" json:"image"`
-	Name string `db:"name" json:"name"`
-	Description string `db:"description" json:"description"`
-	Endereco string `db:"endereco" json:"endereco"`
-	Telefone string `db:"telefone" json:"telefone"`
+	ID              int    `db:"id" json:"id"`
+	Image           string `db:"image" json:"image"`
+	Name            string `db:"name" json:"name"`
+	Description     string `db:"description" json:"description"`
+	Endereco        string `db:"endereco" json:"endereco"`
+	Telefone        string `db:"telefone" json:"telefone"`
 	FullDescription string `db:"fullDescription" json:"fullDescription"`
-	StarNumbers int64 `db:"starNumbers" json:"starNumbers"`
+	StarNumbers     int64  `db:"starNumbers" json:"starNumbers"`
 }
 
 //GetAllHotels get all Hotels from db
@@ -56,7 +56,7 @@ func GetHotel(c *gin.Context) {
 
 	db := goqu.New("postgres", conn.DB)
 
-	query, _, err := db.From("hotels").Where(goqu.Ex{"id":c.Param("id")}).ToSql()
+	query, _, err := db.From("hotels").Where(goqu.Ex{"id": c.Param("id")}).ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
@@ -87,7 +87,7 @@ func PostHotel(c *gin.Context) {
 		return
 	}
 
-	query := db.From("hotels").Insert(goqu.Record{"image": hotel.Image, "name":hotel.Name, "description":hotel.Description, "endereco":hotel.Endereco, "telefone":hotel.Telefone, "fullDescription":hotel.FullDescription, "starNumbers":hotel.StarNumbers})
+	query := db.From("hotels").Insert(goqu.Record{"image": hotel.Image, "name": hotel.Name, "description": hotel.Description, "endereco": hotel.Endereco, "telefone": hotel.Telefone, "fullDescription": hotel.FullDescription, "starNumbers": hotel.StarNumbers})
 
 	fmt.Println(query)
 
@@ -127,8 +127,8 @@ func PutHotel(c *gin.Context) {
 		return
 	}
 
-	query := db.From("hotels").Where(goqu.Ex{"id":c.Param("id")})
-	exec := query.Update(goqu.Record{"image": hotel.Image, "name":hotel.Name, "description":hotel.Description, "endereco":hotel.Endereco, "telefone":hotel.Telefone, "fullDescription":hotel.FullDescription, "starNumbers":hotel.StarNumbers})
+	query := db.From("hotels").Where(goqu.Ex{"id": c.Param("id")})
+	exec := query.Update(goqu.Record{"image": hotel.Image, "name": hotel.Name, "description": hotel.Description, "endereco": hotel.Endereco, "telefone": hotel.Telefone, "fullDescription": hotel.FullDescription, "starNumbers": hotel.StarNumbers})
 
 	result, err := exec.Exec()
 
@@ -166,7 +166,7 @@ func DeleteHotel(c *gin.Context) {
 		return
 	}
 
-	query := db.From("hotels").Where(goqu.Ex{"id":c.Param("id")})
+	query := db.From("hotels").Where(goqu.Ex{"id": c.Param("id")})
 	exec := query.Delete()
 
 	result, err := exec.Exec()

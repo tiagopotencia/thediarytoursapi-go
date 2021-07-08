@@ -1,21 +1,22 @@
 package business
 
 import (
-	"github.com/gin-gonic/gin"
 	"errors"
 	"log"
-	"git.heroku.com/thediarytoursapi-go/connection"
+	"mol/connection"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"gopkg.in/doug-martin/goqu.v3"
 	_ "gopkg.in/doug-martin/goqu.v3/adapters/postgres"
-	"net/http"
 )
 
 //TODO: Renomear nome das coluas do banco
 type PhoneInBrazil struct {
-	ID         int64 `db:"id"`
+	ID         int64  `db:"id"`
 	ParentName string `db:"parent_name"`
 	Phone      string `db:"phone"`
-	IdUser     int64 `db:"id_user"`
+	IdUser     int64  `db:"id_user"`
 }
 
 //GetAllPhoneInBrazil get all PhoneInBrazil from db
@@ -48,7 +49,7 @@ func GetPhoneInBrazil(c *gin.Context) {
 
 	db := goqu.New("postgres", conn.DB)
 
-	query, _, err := db.From("phone_in_brazil").Where(goqu.Ex{"id":c.Param("id")}).ToSql()
+	query, _, err := db.From("phone_in_brazil").Where(goqu.Ex{"id": c.Param("id")}).ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
@@ -79,7 +80,7 @@ func PostPhoneInBrazil(c *gin.Context) {
 		return
 	}
 
-	query := db.From("phone_in_brazil").Insert(goqu.Record{"parent_name": phoneInBrazil.ParentName, "phone":phoneInBrazil.Phone, "id_user":phoneInBrazil.IdUser})
+	query := db.From("phone_in_brazil").Insert(goqu.Record{"parent_name": phoneInBrazil.ParentName, "phone": phoneInBrazil.Phone, "id_user": phoneInBrazil.IdUser})
 
 	result, err := query.Exec()
 
@@ -117,8 +118,8 @@ func PutPhoneInBrazil(c *gin.Context) {
 		return
 	}
 
-	query := db.From("phone_in_brazil").Where(goqu.Ex{"id":c.Param("id")})
-	exec := query.Update(goqu.Record{"parent_name": phoneInBrazil.ParentName, "phone":phoneInBrazil.Phone, "id_user":phoneInBrazil.IdUser})
+	query := db.From("phone_in_brazil").Where(goqu.Ex{"id": c.Param("id")})
+	exec := query.Update(goqu.Record{"parent_name": phoneInBrazil.ParentName, "phone": phoneInBrazil.Phone, "id_user": phoneInBrazil.IdUser})
 
 	result, err := exec.Exec()
 
@@ -156,7 +157,7 @@ func DeletePhoneInBrazil(c *gin.Context) {
 		return
 	}
 
-	query := db.From("phone_in_brazil").Where(goqu.Ex{"id":c.Param("id")})
+	query := db.From("phone_in_brazil").Where(goqu.Ex{"id": c.Param("id")})
 	exec := query.Delete()
 
 	result, err := exec.Exec()

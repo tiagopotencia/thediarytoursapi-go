@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"git.heroku.com/thediarytoursapi-go/routes"
-	"github.com/itsjamie/gin-cors"
-	"time"
+	"mol/routes"
 	"os"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/itsjamie/gin-cors"
 )
 
 func main() {

@@ -1,11 +1,12 @@
 package business
 
 import (
-	"git.heroku.com/thediarytoursapi-go/connection"
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"errors"
 	"log"
+	"mol/connection"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"gopkg.in/doug-martin/goqu.v3"
 	_ "gopkg.in/doug-martin/goqu.v3/adapters/postgres"
 )
@@ -16,7 +17,7 @@ type TripUtilNumbers struct {
 	Type        string `db:"type"`
 	Phone       string `db:"phone"`
 	Description string `db:"description"`
-	IdTrip      int64 `db:"id_trip"`
+	IdTrip      int64  `db:"id_trip"`
 }
 
 func GetAllTripUtilNumbers(c *gin.Context) {
@@ -48,7 +49,7 @@ func GetTripUtilNumber(c *gin.Context) {
 
 	db := goqu.New("postgres", conn.DB)
 
-	query, _, err := db.From("trip_util_numbers").Where(goqu.Ex{"id":c.Param("id")}).ToSql()
+	query, _, err := db.From("trip_util_numbers").Where(goqu.Ex{"id": c.Param("id")}).ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
@@ -79,7 +80,7 @@ func PostTripUtilNumber(c *gin.Context) {
 		return
 	}
 
-	query := db.From("trip_util_numbers").Insert(goqu.Record{"type": tripUtilNumber.Type, "phone":tripUtilNumber.Phone, "description":tripUtilNumber.Description, "id_trip":tripUtilNumber.IdTrip})
+	query := db.From("trip_util_numbers").Insert(goqu.Record{"type": tripUtilNumber.Type, "phone": tripUtilNumber.Phone, "description": tripUtilNumber.Description, "id_trip": tripUtilNumber.IdTrip})
 
 	result, err := query.Exec()
 
@@ -117,8 +118,8 @@ func PutTripUtilNumber(c *gin.Context) {
 		return
 	}
 
-	query := db.From("trip_util_numbers").Where(goqu.Ex{"id":c.Param("id")})
-	exec := query.Update(goqu.Record{"type": tripUtilNumber.Type, "phone":tripUtilNumber.Phone, "description":tripUtilNumber.Description, "id_trip":tripUtilNumber.IdTrip})
+	query := db.From("trip_util_numbers").Where(goqu.Ex{"id": c.Param("id")})
+	exec := query.Update(goqu.Record{"type": tripUtilNumber.Type, "phone": tripUtilNumber.Phone, "description": tripUtilNumber.Description, "id_trip": tripUtilNumber.IdTrip})
 
 	result, err := exec.Exec()
 
@@ -156,7 +157,7 @@ func DeleteTripUtilNumber(c *gin.Context) {
 		return
 	}
 
-	query := db.From("trip_util_numbers").Where(goqu.Ex{"id":c.Param("id")})
+	query := db.From("trip_util_numbers").Where(goqu.Ex{"id": c.Param("id")})
 	exec := query.Delete()
 
 	result, err := exec.Exec()

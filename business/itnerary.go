@@ -1,27 +1,27 @@
 package business
 
 import (
-	"git.heroku.com/thediarytoursapi-go/connection"
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"errors"
 	"log"
+	"mol/connection"
+	"net/http"
+	"regexp"
+
+	"github.com/gin-gonic/gin"
 	"gopkg.in/doug-martin/goqu.v3"
 	_ "gopkg.in/doug-martin/goqu.v3/adapters/postgres"
-	"regexp"
 )
-
 
 //TODO: Renomear nome das colunas do banco
 type Itinerary struct {
-	ID          int64 `db:"id"`
-	Title       string `db:"title"`
-	Description string `db:"description"`
-	IdTrip      *int64 `db:"id_trip"`
-	Image      *string `db:"image"`
-	Dia      string `db:"dia"`
-	Order      *int64 `db:"order"` 
-	Weekday      *string `db:"weekday"`
+	ID          int64   `db:"id"`
+	Title       string  `db:"title"`
+	Description string  `db:"description"`
+	IdTrip      *int64  `db:"id_trip"`
+	Image       *string `db:"image"`
+	Dia         string  `db:"dia"`
+	Order       *int64  `db:"order"`
+	Weekday     *string `db:"weekday"`
 }
 
 type Resp struct {
@@ -63,7 +63,7 @@ func GetItinerary(c *gin.Context) {
 
 	db := goqu.New("postgres", conn.DB)
 
-	query, _, err := db.From("itinerary").Where(goqu.Ex{"id":c.Param("id")}).ToSql()
+	query, _, err := db.From("itinerary").Where(goqu.Ex{"id": c.Param("id")}).ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
@@ -85,7 +85,7 @@ func GetItineraryByDay(c *gin.Context) {
 
 	//query, err := bindata.Asset("queries\\message\\getAllMessages.sql")
 
-	query, _, err := db.From("itinerary").Where(goqu.Ex{"weekday":  goqu.Op{"like": regexp.MustCompile("^("+c.Param("dia")+")")}}).Order(goqu.I("order").Asc()).ToSql()
+	query, _, err := db.From("itinerary").Where(goqu.Ex{"weekday": goqu.Op{"like": regexp.MustCompile("^(" + c.Param("dia") + ")")}}).Order(goqu.I("order").Asc()).ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
@@ -104,8 +104,6 @@ func GetItineraryByDay(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-
-
 //PostItinerary insert a new Itinerary
 func PostItinerary(c *gin.Context) {
 	conn := connection.GetConnection()
@@ -123,7 +121,7 @@ func PostItinerary(c *gin.Context) {
 		return
 	}
 
-	query := db.From("itinerary").Insert(goqu.Record{"title": itinerary.Title, "description":itinerary.Description, "id_trip":itinerary.IdTrip, "image":itinerary.Image, "dia":itinerary.Dia})
+	query := db.From("itinerary").Insert(goqu.Record{"title": itinerary.Title, "description": itinerary.Description, "id_trip": itinerary.IdTrip, "image": itinerary.Image, "dia": itinerary.Dia})
 
 	result, err := query.Exec()
 
@@ -161,8 +159,8 @@ func PutItinerary(c *gin.Context) {
 		return
 	}
 
-	query := db.From("itinerary").Where(goqu.Ex{"id":c.Param("id")})
-	exec := query.Update(goqu.Record{"title": itinerary.Title, "description":itinerary.Description, "id_trip":itinerary.IdTrip})
+	query := db.From("itinerary").Where(goqu.Ex{"id": c.Param("id")})
+	exec := query.Update(goqu.Record{"title": itinerary.Title, "description": itinerary.Description, "id_trip": itinerary.IdTrip})
 
 	result, err := exec.Exec()
 
@@ -200,7 +198,7 @@ func DeleteItinerary(c *gin.Context) {
 		return
 	}
 
-	query := db.From("itinerary").Where(goqu.Ex{"id":c.Param("id")})
+	query := db.From("itinerary").Where(goqu.Ex{"id": c.Param("id")})
 	exec := query.Delete()
 
 	result, err := exec.Exec()

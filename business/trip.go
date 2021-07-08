@@ -1,18 +1,19 @@
 package business
 
 import (
-	"git.heroku.com/thediarytoursapi-go/connection"
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"errors"
-	"git.heroku.com/thediarytoursapi-go/apireturns"
 	"log"
+	"mol/apireturns"
+	"mol/connection"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"gopkg.in/doug-martin/goqu.v3"
 	_ "gopkg.in/doug-martin/goqu.v3/adapters/postgres"
 )
 
 type Trip struct {
-	ID    int64 `db:"id" json:"id"`
+	ID    int64  `db:"id" json:"id"`
 	Code  string `db:"code" json:"code"`
 	About string `db:"about" json:"about"`
 	Name  string `db:"name" json:"name"`
@@ -52,7 +53,7 @@ func GetTrip(c *gin.Context) {
 
 	db := goqu.New("postgres", conn.DB)
 
-	query, _, err := db.From("trip").Where(goqu.Ex{"id":c.Param("id")}).ToSql()
+	query, _, err := db.From("trip").Where(goqu.Ex{"id": c.Param("id")}).ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
@@ -83,7 +84,7 @@ func PostTrip(c *gin.Context) {
 		return
 	}
 
-	query := db.From("trip").Insert(goqu.Record{"code": trip.Code, "about":trip.About, "name":trip.Name})
+	query := db.From("trip").Insert(goqu.Record{"code": trip.Code, "about": trip.About, "name": trip.Name})
 
 	result, err := query.Exec()
 
@@ -121,8 +122,8 @@ func PutTrip(c *gin.Context) {
 		return
 	}
 
-	query := db.From("trip").Where(goqu.Ex{"id":c.Param("id")})
-	exec := query.Update(goqu.Record{"code": trip.Code, "about":trip.About, "name":trip.Name})
+	query := db.From("trip").Where(goqu.Ex{"id": c.Param("id")})
+	exec := query.Update(goqu.Record{"code": trip.Code, "about": trip.About, "name": trip.Name})
 
 	result, err := exec.Exec()
 
@@ -160,7 +161,7 @@ func DeleteTrip(c *gin.Context) {
 		return
 	}
 
-	query := db.From("trip").Where(goqu.Ex{"id":c.Param("id")})
+	query := db.From("trip").Where(goqu.Ex{"id": c.Param("id")})
 	exec := query.Delete()
 
 	result, err := exec.Exec()

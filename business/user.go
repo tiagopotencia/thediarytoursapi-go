@@ -1,18 +1,19 @@
 package business
 
 import (
-	"github.com/gin-gonic/gin"
 	"errors"
 	"log"
-	"git.heroku.com/thediarytoursapi-go/connection"
+	"mol/connection"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"gopkg.in/doug-martin/goqu.v3"
 	_ "gopkg.in/doug-martin/goqu.v3/adapters/postgres"
-	"net/http"
 )
 
 //TODO: Renomear nome das coluas do banco
 type User struct {
-	ID                int64 `db:"id" json:"id"`
+	ID                int64  `db:"id" json:"id"`
 	Name              string `db:"name" json:"name"`
 	Email             string `db:"email" json:"email"`
 	Phone             string `db:"phone" json:"phone"`
@@ -52,7 +53,7 @@ func GetUser(c *gin.Context) {
 
 	db := goqu.New("postgres", conn.DB)
 
-	query, _, err := db.From("user").Where(goqu.Ex{"id":c.Param("id")}).ToSql()
+	query, _, err := db.From("user").Where(goqu.Ex{"id": c.Param("id")}).ToSql()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("Query file not found").Error())
@@ -93,8 +94,8 @@ func PostUser(c *gin.Context) {
 	//ZipCode           string `db:"zip_code"`
 	//IsLeader          bool `db:"is_leader"`
 
-	query := db.From("user").Insert(goqu.Record{"name": user.Name, "email":user.Email, "phone":user.Phone, "address":user.Address,
-		"address_number":user.AddressNumber, "address_complement":user.AddressComplement, "zip_code":user.ZipCode, "is_leader":user.IsLeader})
+	query := db.From("user").Insert(goqu.Record{"name": user.Name, "email": user.Email, "phone": user.Phone, "address": user.Address,
+		"address_number": user.AddressNumber, "address_complement": user.AddressComplement, "zip_code": user.ZipCode, "is_leader": user.IsLeader})
 
 	result, err := query.Exec()
 
@@ -132,9 +133,9 @@ func PutUser(c *gin.Context) {
 		return
 	}
 
-	query := db.From("user").Where(goqu.Ex{"id":c.Param("id")})
-	exec := query.Update(goqu.Record{"name": user.Name, "email":user.Email, "phone":user.Phone, "address":user.Address,
-		"address_number":user.AddressNumber, "address_complement":user.AddressComplement, "zip_code":user.ZipCode, "is_leader":user.IsLeader})
+	query := db.From("user").Where(goqu.Ex{"id": c.Param("id")})
+	exec := query.Update(goqu.Record{"name": user.Name, "email": user.Email, "phone": user.Phone, "address": user.Address,
+		"address_number": user.AddressNumber, "address_complement": user.AddressComplement, "zip_code": user.ZipCode, "is_leader": user.IsLeader})
 
 	result, err := exec.Exec()
 
@@ -172,7 +173,7 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	query := db.From("user").Where(goqu.Ex{"id":c.Param("id")})
+	query := db.From("user").Where(goqu.Ex{"id": c.Param("id")})
 	exec := query.Delete()
 
 	result, err := exec.Exec()
